@@ -8,7 +8,7 @@
 
 import os
 
-from flypi.users.models import User, Role
+from flypi.auth.models import User, Role
 from flypi.ext import db, migrate, security
 from flask import Flask
 from flask.ext.security import SQLAlchemyUserDatastore

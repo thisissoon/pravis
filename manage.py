@@ -11,8 +11,7 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager, Shell, Server
 from flypi.app import create_app
 from flypi.ext import db
-from flypi.users.models import User
-from sqlalchemy_schemadisplay import create_schema_graph
+from flypi.auth.models import User
 
 
 app = create_app()
@@ -38,6 +37,8 @@ def schema_diagram():
     """
     Draw an Entity Relationship Diagram
     """
+
+    from sqlalchemy_schemadisplay import create_schema_graph
 
     graph = create_schema_graph(
         metadata=db.MetaData(app.config['SQLALCHEMY_DATABASE_URI']),
