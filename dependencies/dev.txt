@@ -1,0 +1,11 @@
+#
+# Development helper applications, not required for running the
+# application.
+#
+
+ipython
+ipdb
+pdbpp
+
+# Schema graph generation
+sqlalchemy_schemadisplay
