@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: flypi.ext
+.. module:: pravis.ext
    :synopsis: Flask extenstions, these are initialized in the application
               factory and external modules
 """

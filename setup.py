@@ -63,7 +63,7 @@ def read(name):
 
 # Setup function
 setup(
-    name='flypi',
+    name='pravis',
     version=read('VERSION.txt').strip(),
     author='SOON_',
     author_email='dorks@thisissoon.com',

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: flypi.app
+.. module:: pravis.app
     :synopsis: Flask application factory pattern:
                http://flask.pocoo.org/docs/patterns/appfactories/
 """
 
 import os
 
-from flypi.auth.models import User, Role
-from flypi.ext import db, migrate, security
 from flask import Flask
 from flask.ext.security import SQLAlchemyUserDatastore
+from pravis.auth.models import User, Role
+from pravis.ext import db, migrate, security
 
 
 def load_config(app, override=None):
@@ -24,11 +24,11 @@ def load_config(app, override=None):
     """
 
     # Default configuration
-    app.config.from_object('flypi.config.default')
+    app.config.from_object('pravis.config.default')
 
     # Override using os environment variable
-    if os.environ.get('FLYPI_SETTINGS_PATH'):
-        app.config.from_envvar('FLYPI_SETTINGS_PATH')
+    if os.environ.get('PRAVIS_SETTINGS_PATH'):
+        app.config.from_envvar('PRAVIS_SETTINGS_PATH')
 
     # If override path is supplied use those settings
     if override:
@@ -50,7 +50,7 @@ def register_blueprints(app):
         try:
             module = __import__(
                 '{0}'.format(blueprint),
-                fromlist=['flypi'])
+                fromlist=['pravis'])
             app.register_blueprint(module.blueprint)
         except ImportError:
             # TODO: Warning here
