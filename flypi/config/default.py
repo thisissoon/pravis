@@ -15,6 +15,8 @@ DEBUG = True
 
 SECRET_KEY = 'changeme'
 SECURITY_TRACKABLE = True
+SECURITY_PASSWORD_HASH = 'sha512_crypt'
+SECURITY_PASSWORD_SALT = SECRET_KEY
 
 # Database
 
@@ -25,4 +27,6 @@ SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or \
 # Blueprints
 
 BLUEPRINTS = [
+    'flypi.auth',
+    'flypi.simple'
 ]

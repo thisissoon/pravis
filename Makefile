@@ -25,3 +25,6 @@ db-migrate:
 
 db-upgrade:
 	python ./manage.py db upgrade
+
+runserver:
+	python ./manage.py server
