@@ -14,9 +14,9 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager, prompt, prompt_pass, Shell, Server
 from flask.ext.security import SQLAlchemyUserDatastore
 from flask.ext.security.utils import encrypt_password
-from flypi.app import create_app
-from flypi.auth.models import User, Role
-from flypi.ext import db
+from pravis.app import create_app
+from pravis.auth.models import User, Role
+from pravis.ext import db
 
 
 app = create_app()

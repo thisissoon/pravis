@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: flypi.config.default
+.. module:: pravis.config.default
    :synopsis: Default configuration for Flask, do not use for Production
 """
 
@@ -27,6 +27,6 @@ SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or \
 # Blueprints
 
 BLUEPRINTS = [
-    'flypi.auth',
-    'flypi.simple'
+    'pravis.auth',
+    'pravis.simple'
 ]

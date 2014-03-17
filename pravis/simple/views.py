@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: flypi.simple.views
+.. module:: pravis.simple.views
    :synopsis: Simple module views.
 """
 

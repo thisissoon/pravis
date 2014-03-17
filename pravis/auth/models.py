@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: flypi.auth.models
+.. module:: pravis.auth.models
    :synopsis: User authentication models
 """
 
 from flask.ext.security import RoleMixin, UserMixin
-from flypi.ext import db
+from pravis.ext import db
 from sqlalchemy.dialects import postgresql
 
 
