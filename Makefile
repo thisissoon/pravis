@@ -28,3 +28,7 @@ db-upgrade:
 
 runserver:
 	python ./manage.py server
+
+documentation:
+	make -C docs clean
+	make -C docs html

@@ -12,3 +12,6 @@ dist/
 
 # Schema
 schema.png
+
+# Docs
+docs/build/
