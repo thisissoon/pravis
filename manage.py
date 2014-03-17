@@ -7,16 +7,24 @@
               running a local development server.
 """
 
+import re
+import sys
+
 from flask.ext.migrate import Migrate, MigrateCommand
-from flask.ext.script import Manager, Shell, Server
+from flask.ext.script import Manager, prompt, prompt_pass, Shell, Server
+from flask.ext.security import SQLAlchemyUserDatastore
+from flask.ext.security.utils import encrypt_password
 from flypi.app import create_app
+from flypi.auth.models import User, Role
 from flypi.ext import db
-from flypi.auth.models import User
 
 
 app = create_app()
 manager = Manager(app)
 migrate = Migrate(app, db)
+
+
+EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 
 def _make_context():
@@ -47,6 +55,37 @@ def schema_diagram():
     )
 
     graph.write_png('schema.png')
+
+
+@manager.command
+def createsuperuser():
+    """
+    Create a super user of the system, requiring Email and password.
+    """
+
+    email = prompt('User E-Mail')
+    email_confirm = prompt('Confirm E-Mail')
+
+    if not email == email_confirm:
+        sys.exit('\nCould not create user: E-Mail did not match')
+
+    if not EMAIL_REGEX.match(email):
+        sys.exit('\nCould not create user: Invalid E-Mail addresss')
+
+    password = prompt_pass('User password')
+    password_confirm = prompt_pass('Confirmed password')
+
+    if not password == password_confirm:
+        sys.exit('\nCould not create user: Passwords did not match')
+
+    datastore = SQLAlchemyUserDatastore(db, User, Role)
+    datastore.create_user(
+        email=email,
+        password=encrypt_password(password),
+        active=True,
+        super_user=True)
+
+    db.session.commit()
 
 
 manager.add_command("server", Server())

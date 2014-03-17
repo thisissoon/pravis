@@ -48,17 +48,22 @@ def register_blueprints(app):
 
         # Register Blueprints
         try:
-            views = __import__(
-                '{0}.views'.format(blueprint),
+            module = __import__(
+                '{0}'.format(blueprint),
                 fromlist=['flypi'])
-            app.register_blueprint(views.blueprint)
+            app.register_blueprint(module.blueprint)
         except ImportError:
+            # TODO: Warning here
+            pass
+        except AttributeError:
+            # TODO: Warning here
             pass
 
         # Import models
         try:
             __import__('{0}.models'.format(blueprint))
         except ImportError:
+            # TODO: Warning here
             pass
 
 
