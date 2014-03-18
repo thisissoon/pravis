@@ -28,3 +28,12 @@ db-upgrade:
 
 runserver:
 	python ./manage.py server
+
+# Documentaion Helpers
+
+docs-make:
+	make -C docs clean
+	make -C docs html
+
+docs-serve: docs-make
+	cd docs/build/html; open "http://localhost:8000" && python -m SimpleHTTPServer
