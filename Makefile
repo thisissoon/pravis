@@ -35,7 +35,5 @@ docs-make:
 	make -C docs clean
 	make -C docs html
 
-docs-serve:
-	make -C docs clean
-	make -C docs html
-	cd docs/build/html; python -m SimpleHTTPServer
+docs-serve: docs-make
+	cd docs/build/html; open "http://localhost:8000" && python -m SimpleHTTPServer
