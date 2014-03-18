@@ -29,6 +29,13 @@ db-upgrade:
 runserver:
 	python ./manage.py server
 
-documentation:
+# Documentaion Helpers
+
+docs-make:
 	make -C docs clean
 	make -C docs html
+
+docs-serve:
+	make -C docs clean
+	make -C docs html
+	cd docs/build/html; python -m SimpleHTTPServer
