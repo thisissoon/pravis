@@ -46,6 +46,8 @@ def register_blueprints(app):
 
     for blueprint in app.config['BLUEPRINTS']:
 
+        module = None
+
         # Register Blueprints
         try:
             module = __import__(

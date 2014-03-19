@@ -78,7 +78,7 @@ setup(
     # Dependencies
     install_requires=read_dependencies(INSTALL_DEPS),
     extras_require={
-        'develop': read_dependencies(TEST_DEPS),
+        'test': read_dependencies(TEST_DEPS),
         'develop': read_dependencies(DEV_DEPS)},
     # Dependencies not hosted on PyPi
     dependency_links=[],

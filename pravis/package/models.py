@@ -67,14 +67,8 @@ class Release(BaseModel):
     long_description = db.Column(db.UnicodeText, nullable=True)
 
     # Relations
-    user = db.relationship(
-        'User',
-        backref=db.backref('releases', lazy='dynamic')
-    )
-    package = db.relationship(
-        'Package',
-        backref=db.backref('releases', lazy='dynamic')
-    )
+    user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    package = db.Column(db.Integer, db.ForeignKey('package.id'))
     classifiers = db.relationship(
         'Classifier',
         secondary='release_classifiers',
@@ -111,7 +105,4 @@ class File(BaseModel):
     storage = db.Column(db.Unicode(length=512))
 
     # Relations
-    release = db.relationship(
-        'Release',
-        backref=db.backref('files', lazy='dynamic')
-    )
+    release = db.Column(db.Integer, db.ForeignKey('release.id'))
