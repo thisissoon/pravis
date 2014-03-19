@@ -6,10 +6,10 @@
 """
 
 from pravis.ext import db
-from pravis.models import BaseModel
+from pravis.models import CreateUpdateMixin
 
 
-class Package(BaseModel):
+class Package(db.Model, CreateUpdateMixin):
 
     __tablename__ = 'package'
 
@@ -26,7 +26,7 @@ class Package(BaseModel):
         backref=db.backref('packages', lazy='dynamic'))
 
 
-class PackageOwners(BaseModel):
+class PackageOwners(db.Model, CreateUpdateMixin):
 
     __tablename__ = 'package_owners'
 
@@ -41,7 +41,7 @@ class PackageOwners(BaseModel):
         primary_key=True)
 
 
-class Classifier(BaseModel):
+class Classifier(db.Model, CreateUpdateMixin):
 
     __tablename__ = 'classifier'
 
@@ -52,7 +52,7 @@ class Classifier(BaseModel):
     name = db.Column(db.Unicode(length=128))
 
 
-class Release(BaseModel):
+class Release(db.Model, CreateUpdateMixin):
 
     __tablename__ = 'release'
 
@@ -76,7 +76,7 @@ class Release(BaseModel):
     )
 
 
-class ReleaseClassifiers(BaseModel):
+class ReleaseClassifiers(db.Model, CreateUpdateMixin):
 
     __tablename__ = 'release_classifiers'
 
@@ -91,7 +91,7 @@ class ReleaseClassifiers(BaseModel):
         primary_key=True)
 
 
-class File(BaseModel):
+class File(db.Model, CreateUpdateMixin):
 
     __tablename__ = 'file'
 

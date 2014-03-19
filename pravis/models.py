@@ -10,10 +10,7 @@ import datetime
 from pravis.ext import db
 
 
-class BaseModel(db.Model):
-
-    # This is an abstract model, i.e no Table
-    __abstract__ = True
+class CreateUpdateMixin(object):
 
     # Timestamps
     created = db.Column(db.DateTime, default=datetime.datetime.utcnow)

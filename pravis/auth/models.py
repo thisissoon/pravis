@@ -6,7 +6,7 @@
 """
 
 from flask.ext.security import RoleMixin, UserMixin
-from pravis.models import BaseModel
+from pravis.models import CreateUpdateMixin
 from pravis.ext import db
 from sqlalchemy.dialects import postgresql
 
@@ -18,7 +18,7 @@ roles_users = db.Table(
     db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 
-class User(BaseModel, UserMixin):
+class User(db.Model, UserMixin, CreateUpdateMixin):
 
     # Primary Key
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +48,7 @@ class User(BaseModel, UserMixin):
         backref=db.backref('users', lazy='dynamic'))
 
 
-class Role(BaseModel, RoleMixin):
+class Role(db.Model, RoleMixin, CreateUpdateMixin):
 
     # Primary key
     id = db.Column(db.Integer(), primary_key=True)
