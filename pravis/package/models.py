@@ -59,8 +59,9 @@ class Release(db.Model, CreateUpdateMixin):
     in setup.py, for example field author = author keyword argument in
     setup(), there are the following exceptions however:
 
+        home_page = url
         summary = description
-        url = home_page
+        description = long_description
     """
 
     __tablename__ = 'release'
@@ -74,7 +75,7 @@ class Release(db.Model, CreateUpdateMixin):
     home_page = db.Column(db.Unicode(512), nullable=True)
     download_url = db.Column(db.Unicode(512), nullable=True)
     summary = db.Column(db.UnicodeText, nullable=True)  # description
-    long_description = db.Column(db.UnicodeText, nullable=True)
+    description = db.Column(db.UnicodeText, nullable=True)
     license = db.Column(db.UnicodeText, nullable=True)
     metadata_version = db.Column(
         db.Unicode(512),
