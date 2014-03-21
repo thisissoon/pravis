@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: pravis.models
-   :synopsis: Base models all models should inherit from
+.. module:: pravis.db.mixins
+   :synopsis: Helper mixins to extend default model functionality
 """
 
 import datetime

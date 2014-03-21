@@ -6,7 +6,7 @@
 """
 
 from pravis.ext import db
-from pravis.models import CreateUpdateMixin
+from pravis.db.mixins import CreateUpdateMixin
 
 
 class Package(db.Model, CreateUpdateMixin):

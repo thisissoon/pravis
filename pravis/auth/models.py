@@ -6,8 +6,8 @@
 """
 
 from flask.ext.security import RoleMixin, UserMixin
-from pravis.models import CreateUpdateMixin
 from pravis.ext import db
+from pravis.db.mixins import CreateUpdateMixin
 from sqlalchemy.dialects import postgresql
 
 
