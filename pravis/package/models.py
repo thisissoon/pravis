@@ -50,7 +50,7 @@ class Classifier(db.Model, CreateUpdateMixin):
     id = db.Column(db.Integer, primary_key=True)
 
     # Classifier attributes
-    name = db.Column(db.Unicode(length=128))
+    name = db.Column(db.Unicode(length=128), unique=True)
 
 
 class Release(db.Model, CreateUpdateMixin):
