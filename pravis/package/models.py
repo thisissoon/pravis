@@ -17,7 +17,8 @@ class Package(db.Model, CreateUpdateMixin):
     id = db.Column(db.Integer, primary_key=True)
 
     # Package attributes
-    name = db.Column(db.Unicode(length=128))
+    name = db.Column(db.Unicode(length=128), unique=True)
+    mirrored = db.Column(db.Boolean, default=True)
 
     # Owners of the package
     owners = db.relationship(
