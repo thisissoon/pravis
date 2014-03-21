@@ -33,7 +33,14 @@ class GetOrCreateMixin(object):
     def get_or_create(kls, commit=True, **kwargs):
         """
         Get instance of object or create a new one and return it,
-        keyword arguments should be key=value pairs.
+        keyword arguments should be key=value pairs. Returns a tuple, first
+        value being a boolean equalling True if instance already existed
+        or False if instance is new followed by the object instance.
+
+        :param commit: Automatically commit of new instance
+        :type commit: bool -- default True
+
+        :returns: tuple -- Bool, instance
         """
 
         instance = db.session.query(kls).filter_by(**kwargs).first()
