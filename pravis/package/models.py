@@ -54,6 +54,14 @@ class Classifier(db.Model, CreateUpdateMixin):
 
 
 class Release(db.Model, CreateUpdateMixin):
+    """
+    Package release data, the fields here more or less map to attributes
+    in setup.py, for example field author = author keyword argument in
+    setup(), there are the following exceptions however:
+
+        summary = description
+        url = home_page
+    """
 
     __tablename__ = 'release'
 
@@ -61,11 +69,21 @@ class Release(db.Model, CreateUpdateMixin):
     id = db.Column(db.Integer, primary_key=True)
 
     # Release attributes - comes from setup.py
-    author = db.Column(db.Unicode(length=128), nullable=True)
-    author_email = db.Column(db.Unicode(length=256), nullable=True)
-    url = db.Column(db.UnicodeText, nullable=True)
-    description = db.Column(db.UnicodeText, nullable=True)
+    author = db.Column(db.Unicode(128), nullable=True)
+    author_email = db.Column(db.Unicode(256), nullable=True)
+    home_page = db.Column(db.Unicode(512), nullable=True)
+    download_url = db.Column(db.Unicode(512), nullable=True)
+    summary = db.Column(db.UnicodeText, nullable=True)  # description
     long_description = db.Column(db.UnicodeText, nullable=True)
+    license = db.Column(db.UnicodeText, nullable=True)
+    metadata_version = db.Column(
+        db.Unicode(512),
+        default='1.0',
+        nullable=True)
+    version = db.Column(
+        db.Unicode(512),
+        default='1.0',
+        nullable=True)
 
     # Relations
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
