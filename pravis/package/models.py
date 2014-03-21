@@ -69,6 +69,16 @@ class Release(db.Model, CreateUpdateMixin):
     # Primary Key
     id = db.Column(db.Integer, primary_key=True)
 
+    # Foreign Keys
+    user = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id'),
+        nullable=False)
+    package = db.Column(
+        db.Integer,
+        db.ForeignKey('package.id'),
+        nullable=False)
+
     # Release attributes - comes from setup.py
     author = db.Column(db.Unicode(128), nullable=True)
     author_email = db.Column(db.Unicode(256), nullable=True)
@@ -79,16 +89,13 @@ class Release(db.Model, CreateUpdateMixin):
     license = db.Column(db.UnicodeText, nullable=True)
     metadata_version = db.Column(
         db.Unicode(512),
-        default='1.0',
+        default=u'1.0',
         nullable=True)
     version = db.Column(
         db.Unicode(512),
-        default='1.0',
-        nullable=True)
+        nullable=False)
 
     # Relations
-    user = db.Column(db.Integer, db.ForeignKey('user.id'))
-    package = db.Column(db.Integer, db.ForeignKey('package.id'))
     classifiers = db.relationship(
         'Classifier',
         secondary='release_classifiers',
