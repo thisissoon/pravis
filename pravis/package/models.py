@@ -6,10 +6,10 @@
 """
 
 from pravis.ext import db
-from pravis.db.mixins import CreateUpdateMixin
+from pravis.db.mixins import CreateUpdateMixin, GetOrCreateMixin
 
 
-class Package(db.Model, CreateUpdateMixin):
+class Package(db.Model, CreateUpdateMixin, GetOrCreateMixin):
 
     __tablename__ = 'package'
 
