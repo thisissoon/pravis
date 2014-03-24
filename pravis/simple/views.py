@@ -10,7 +10,7 @@ from flask.ext.login import current_user
 from flask.views import MethodView
 from pravis.auth.decorators import basic_auth
 from pravis.ext import db
-from pravis.package.models import Package, Release
+from pravis.package.models import Classifier, Package, Release
 from pravis.simple.forms import ReleaseForm
 from werkzeug.exceptions import BadRequest, Forbidden
 
@@ -61,7 +61,35 @@ class SimpleUploadView(MethodView):
 
         return release
 
+    def add_classifiers(self, release):
+        """
+        Add the release classifers set in the packages setup.py
+
+        :param release: The packages release object
+        :type release: pravis.package.models.Release
+        """
+
+        classifiers = [{'name': v} for v in
+                       request.values.getlist('classifiers')]
+
+        objects = Classifier.get_or_create_from_list(
+            classifiers)
+
+        for exists, classifier in objects:
+            classifier.releases.append(release)
+            db.session.commit()
+
     def post(self):
+        """
+        Process post request to simple endpoint. This endpoint allows for
+        packages to be uploade provided the following requirements are met:
+
+            - User exists
+            - User is an owner of the package
+            - Package is not mirrored from PyPi
+
+        :returns: str -- HTTP response body
+        """
 
         exists, self.package = Package.get_or_create(
             commit=False,
@@ -80,8 +108,7 @@ class SimpleUploadView(MethodView):
         if not form.validate():
             raise BadRequest('Bad release data recived')
 
-        self.create_release(form)
-
-        #classifiers = request.values.getlist('classifiers')
+        release = self.create_release(form)
+        self.add_classifiers(release)
 
         return 'SUCCESS'

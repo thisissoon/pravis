@@ -42,7 +42,7 @@ class PackageOwners(db.Model, CreateUpdateMixin):
         primary_key=True)
 
 
-class Classifier(db.Model, CreateUpdateMixin):
+class Classifier(db.Model, CreateUpdateMixin, GetOrCreateMixin):
 
     __tablename__ = 'classifier'
 
@@ -51,6 +51,26 @@ class Classifier(db.Model, CreateUpdateMixin):
 
     # Classifier attributes
     name = db.Column(db.Unicode(length=128), unique=True)
+
+    @classmethod
+    def get_or_create_from_list(Kls, classifiers):
+        """
+        Get or create a set of classifier objects from a list of
+        dictionaries returning a list of tuples with the return value
+        of the get_or_create mixin as their values.
+
+        :param classifiers: List of dictionaries
+        :type classifiers: list
+
+        :returns: list -- List of get_or_create results
+        """
+
+        objects = []
+        for values in classifiers:
+            exists, classifier = Kls.get_or_create(**values)
+            objects.append((exists, classifier))
+
+        return objects
 
 
 class Release(db.Model, CreateUpdateMixin):
