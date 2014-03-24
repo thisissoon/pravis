@@ -25,33 +25,54 @@ class SimpleUploadView(MethodView):
 
     decorators = [basic_auth, ]
 
+    def authorise_upload(self):
+        """
+        Method checks if the user can upload this package if it already exists.
+        """
+
+        # Packages mirrored from the official pypi cannot be overritten
+        if self.package.mirrored:
+            raise BadRequest('Package is a PyPi mirrored package, cannot'
+                             'overwrite package.')
+
+        # If current logging in user is not an own of the package forbid
+        # their access
+        if not current_user in self.package.owners:
+            raise Forbidden('You are not an owner of this package and'
+                            'cannot update this package.')
+
+    def create_release(self, form):
+        """
+        Create a release object for the package from the release form
+        data if valid
+
+        :param form: Release form with data
+        :type form: pravis.simple.forms.ReleaseForm
+
+        :returns: pravis.package.models.Release -- Release object
+        """
+
+        release = Release(**form.data)
+        release.package = self.package.id
+        release.user = current_user.id
+
+        db.session.add(release)
+        db.session.commit()
+
+        return release
+
     def post(self):
-        name = request.values.get('name')
-        version = request.values.get('version')
 
-        if not name or not version:
-            raise BadRequest('Missing package name or version')
+        exists, self.package = Package.get_or_create(
+            commit=False,
+            name=request.values.get('name'))
 
-        package = db.session.query(Package).filter_by(name=name).first()
+        if exists:
+            self.authorise_upload()
 
-        if package:
-
-            # Packages mirrored from the official pypi cannot be overritten
-            if package.mirrored:
-                raise BadRequest('Package is a PyPi mirrored package, cannot'
-                                 'overwrite package.')
-
-            # If current logging in user is not an own of the package forbid
-            # their access
-            if not current_user in package.owners:
-                raise Forbidden('You are not an owner of this package and'
-                                'cannot update this package.')
-
-        # If package does not exist create it with current user as the owner
-        if not package:
-            package = Package(name=name, mirrored=False)
-            package.owners.append(current_user)
-            db.session.add(package)
+        if not exists:
+            self.package.owners.append(current_user)
+            db.session.add(self.package)
             db.session.commit()
 
         form = ReleaseForm(request.values, csrf_enabled=False)
@@ -59,12 +80,8 @@ class SimpleUploadView(MethodView):
         if not form.validate():
             raise BadRequest('Bad release data recived')
 
-        release = Release(**form.data)
-        release.package = package.id
-        release.user = current_user.id
-        db.session.add(release)
-        db.session.commit()
+        self.create_release(form)
 
-        classifiers = request.values.getlist('classifiers')
+        #classifiers = request.values.getlist('classifiers')
 
         return 'SUCCESS'
