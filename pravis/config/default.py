@@ -7,6 +7,10 @@
 
 import os
 
+# Paths
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 # Debug
 
 DEBUG = True
@@ -31,3 +35,8 @@ BLUEPRINTS = [
     'pravis.package',
     'pravis.simple',
 ]
+
+# Uploads
+
+UPLOAD_DIR = os.path.join(BASE_DIR, '..', 'media')
+UPLOAD_PACKAGE_DIR = os.path.join(UPLOAD_DIR, 'packages')

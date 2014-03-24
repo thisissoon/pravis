@@ -5,14 +5,17 @@
    :synopsis: Simple module views.
 """
 
-from flask import request
+import os
+
+from flask import current_app, request
 from flask.ext.login import current_user
 from flask.views import MethodView
 from pravis.auth.decorators import basic_auth
 from pravis.ext import db
-from pravis.package.models import Classifier, Package, Release
+from pravis.package.models import Classifier, File, Package, Release
 from pravis.simple.forms import ReleaseForm
 from werkzeug.exceptions import BadRequest, Forbidden
+from werkzeug.utils import secure_filename
 
 
 class SimpleListView(MethodView):
@@ -40,6 +43,10 @@ class SimpleUploadView(MethodView):
         if not current_user in self.package.owners:
             raise Forbidden('You are not an owner of this package and'
                             'cannot update this package.')
+
+        # Ensure the request contains a file
+        if not 'content' in request.files:
+            raise BadRequest('Missing file')
 
     def create_release(self, form):
         """
@@ -79,6 +86,32 @@ class SimpleUploadView(MethodView):
             classifier.releases.append(release)
             db.session.commit()
 
+    def add_file(self, release):
+        """
+        Save the file locally, this is to be replaced with a way of defining
+        different storage backends.
+
+        :param release: The packages release object
+        :type release: pravis.package.models.Release
+        """
+
+        f = request.files.get('content')
+        filename = secure_filename(f.filename)
+        path = os.path.join(
+            current_app.config['UPLOAD_PACKAGE_DIR'],
+            filename)
+        f.save(path)
+
+        release_file = File(
+            release=release.id,
+            size=os.stat(path).st_size,
+            filename=filename,
+            filetype=request.values.get('filetype'),
+            storage=path)
+
+        db.session.add(release_file)
+        db.session.commit()
+
     def post(self):
         """
         Process post request to simple endpoint. This endpoint allows for
@@ -109,6 +142,7 @@ class SimpleUploadView(MethodView):
             raise BadRequest('Bad release data recived')
 
         release = self.create_release(form)
+        self.add_file(release)
         self.add_classifiers(release)
 
         return 'SUCCESS'
