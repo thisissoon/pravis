@@ -14,18 +14,49 @@ from pravis.auth.decorators import basic_auth
 from pravis.ext import db
 from pravis.package.models import Classifier, File, Package, Release
 from pravis.simple.forms import ReleaseForm
-from werkzeug.exceptions import BadRequest, Forbidden
+from pravis.views.mixins import TemplateMixin
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from werkzeug.utils import secure_filename
 
 
-class SimpleListView(MethodView):
+class SimpleListView(MethodView, TemplateMixin):
+
+    methods = ['GET', ]
+    template = 'list.html'
 
     def get(self):
-        return 'List of packages'
+        packages = db.session.query(Package).all()
+        return self.render({
+            'packages': packages
+        })
+
+
+class SimpleDetailView(MethodView, TemplateMixin):
+
+    methods = ['GET', ]
+    template = 'detail.html'
+
+    def get(self, name=None, version=None):
+        query = db.session.query(Package)
+
+        if name:
+            query = query.filter(Package.name == name)
+
+        if version:
+            query = query.join(Release).filter(Release.version == version)
+
+        package = query.first()
+
+        if not package:
+            raise NotFound()
+
+        return self.render({
+            'package': package})
 
 
 class SimpleUploadView(MethodView):
 
+    methods = ['POST', ]
     decorators = [basic_auth, ]
 
     def authorise_upload(self):
@@ -60,8 +91,8 @@ class SimpleUploadView(MethodView):
         """
 
         release = Release(**form.data)
-        release.package = self.package.id
-        release.user = current_user.id
+        release.package_id = self.package.id
+        release.user_id = current_user.id
 
         db.session.add(release)
         db.session.commit()
@@ -103,7 +134,7 @@ class SimpleUploadView(MethodView):
         f.save(path)
 
         release_file = File(
-            release=release.id,
+            release_id=release.id,
             size=os.stat(path).st_size,
             filename=filename,
             filetype=request.values.get('filetype'),

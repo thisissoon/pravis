@@ -12,6 +12,7 @@ from flask import Flask
 from flask.ext.security import SQLAlchemyUserDatastore
 from pravis.auth.models import User, Role
 from pravis.ext import db, migrate, security
+from werkzeug import SharedDataMiddleware
 
 
 def load_config(app, override=None):
@@ -53,19 +54,27 @@ def register_blueprints(app):
             module = __import__(
                 '{0}'.format(blueprint),
                 fromlist=['pravis'])
+
+            # Add routes
+            for route, view in module.routes:
+                module.blueprint.add_url_rule(
+                    route,
+                    view_func=view)
+
+            # Register blueprint
             app.register_blueprint(module.blueprint)
+
         except ImportError:
             # TODO: Warning here
             pass
         except AttributeError:
-            # TODO: Warning here
             pass
+            # TODO: Warning here
 
         # Import models
         try:
             __import__('{0}.models'.format(blueprint))
         except ImportError:
-            # TODO: Warning here
             pass
 
 
@@ -104,5 +113,15 @@ def create_app():
 
     # Dynamically load blueprints
     register_blueprints(app)
+
+    # Upload - only in debug
+    if app.config['DEBUG']:
+        app.add_url_rule(
+            '/uploads/<filename>',
+            'uploads',
+            build_only=True)
+        app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
+            '/uploads':  app.config['UPLOAD_DIR']
+        })
 
     return app

@@ -20,11 +20,13 @@ class Package(db.Model, CreateUpdateMixin, GetOrCreateMixin):
     name = db.Column(db.Unicode(length=128), unique=True)
     mirrored = db.Column(db.Boolean, default=True)
 
-    # Owners of the package
+    # Relations
     owners = db.relationship(
         'User',
         secondary='package_owners',
         backref=db.backref('packages', lazy='dynamic'))
+
+    releases = db.relationship('Release')
 
 
 class PackageOwners(db.Model, CreateUpdateMixin):
@@ -90,11 +92,11 @@ class Release(db.Model, CreateUpdateMixin):
     id = db.Column(db.Integer, primary_key=True)
 
     # Foreign Keys
-    user = db.Column(
+    user_id = db.Column(
         db.Integer,
         db.ForeignKey('user.id'),
         nullable=False)
-    package = db.Column(
+    package_id = db.Column(
         db.Integer,
         db.ForeignKey('package.id'),
         nullable=False)
@@ -121,6 +123,8 @@ class Release(db.Model, CreateUpdateMixin):
         secondary='release_classifiers',
         backref=db.backref('releases', lazy='dynamic')
     )
+    files = db.relationship('File')
+    package = db.relationship('Package')
 
 
 class ReleaseClassifiers(db.Model, CreateUpdateMixin):
@@ -145,11 +149,11 @@ class File(db.Model, CreateUpdateMixin):
     # Primary Key
     id = db.Column(db.Integer, primary_key=True)
 
+    # Foreign Keys
+    release_id = db.Column(db.Integer, db.ForeignKey('release.id'))
+
     # File attributes
     size = db.Column(db.Integer, nullable=True)
     filetype = db.Column(db.Unicode(length=32))
     filename = db.Column(db.Unicode(length=32))
     storage = db.Column(db.Unicode(length=512))
-
-    # Relations
-    release = db.Column(db.Integer, db.ForeignKey('release.id'))

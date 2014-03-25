@@ -1,0 +1,10 @@
+<html>
+    <head>
+        <title>Simple Index</title>
+    </head>
+    <body>
+        {% for package in packages %}
+        <a href="{{ url_for('simple.detail', name=package.name) }}">{{ package.name }}</a><br />
+        {% endfor %}
+    </body>
+</html>

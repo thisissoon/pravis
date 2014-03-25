@@ -6,19 +6,24 @@
 """
 
 from flask.blueprints import Blueprint
-from pravis.simple.views import SimpleUploadView, SimpleListView
+from pravis.simple.views import (
+    SimpleListView,
+    SimpleDetailView,
+    SimpleUploadView)
 
-blueprint = Blueprint('simple', __name__, url_prefix='/simple/')
+blueprint = Blueprint(
+    'simple',
+    __name__,
+    url_prefix='/simple',
+    template_folder='templates')
 
 #
 # Routes
 #
 
-blueprint.add_url_rule(
-    '/',
-    view_func=SimpleUploadView.as_view('simple_upload'),
-    methods=['POST'])
-blueprint.add_url_rule(
-    '/',
-    view_func=SimpleListView.as_view('simple_list'),
-    methods=['GET'])
+routes = [
+    ('/', SimpleListView.as_view('list')),
+    ('/', SimpleUploadView.as_view('upload')),
+    ('/<name>/', SimpleDetailView.as_view('detail')),
+    ('/<name>/<version>', SimpleDetailView.as_view('detail-version')),
+]
