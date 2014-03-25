@@ -11,7 +11,7 @@ import os
 from flask import Flask
 from flask.ext.security import SQLAlchemyUserDatastore
 from pravis.auth.models import User, Role
-from pravis.ext import db, migrate, security
+from pravis.ext import db, migrate, security, xmlrpc
 from werkzeug import SharedDataMiddleware
 
 
@@ -95,6 +95,11 @@ def register_extenstions(app):
     # Flask Security
     datastore = SQLAlchemyUserDatastore(db, User, Role)
     security.init_app(app, datastore=datastore)
+
+    # XMLRPC
+    from pravis.simple.xmlrpc import search
+    xmlrpc.connect(app, '/simple/')
+    xmlrpc.register(search, 'search')
 
 
 def create_app():

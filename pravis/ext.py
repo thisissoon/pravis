@@ -20,3 +20,8 @@ migrate = Migrate()
 
 from flask.ext.security import Security
 security = Security()
+
+# XMLRPC
+
+from flask.ext.xmlrpc import XMLRPCHandler
+xmlrpc = XMLRPCHandler('simple')
