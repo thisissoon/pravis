@@ -56,7 +56,18 @@ def load_models(blueprint):
 
 def load_blueprint(app, blueprint):
     """
-    Load the blueprint and register the routes
+    Load the blueprint and register the routes. Routes should be defined as
+    a list of tuples of url, view func, for example:
+
+        routes = [
+            ('/', IndexView.as_view('index'))
+        ]
+
+    Admin views can also be defined but are not required:
+
+        admin = [
+            HelloView(name='Hello', endpoint='hello', category='Hello')
+        ]
 
     :param app: Flask application instance
     :type app: flask.app.Flask
@@ -80,6 +91,13 @@ def load_blueprint(app, blueprint):
         raise ImproperlyConfigured('routes list is not defined')
 
     app.register_blueprint(module.blueprint)
+
+    try:
+        for view in module.admin:
+            admin.add_view(view)
+    except AttributeError:
+        # TODO: Log later at debug info
+        pass
 
 
 def register_extenstions(app):
@@ -116,11 +134,12 @@ def register_blueprints(app):
 
     Each blueprint can contain the following files:
 
-        - __init__.py - Instantiates the blueprint
+        - __init__.py
         - admin.py - routes for registering admin views
         - models.py - SQL Alchemy models
         - routes.py - Instantiates the blueprint and contains a list named
-                      routes contain tuples of (url, view_func)
+                      routes contain tuples of (url, view_func), also
+                      admin views should be defined in a list.
 
     :param app: Flask application instance
     :type app: flask.app.Flask
