@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: pravis.ext
+.. module:: pravis.app.ext
    :synopsis: Flask extenstions, these are initialized in the application
               factory and external modules
 """
@@ -25,3 +25,8 @@ security = Security()
 
 from flask.ext.xmlrpc import XMLRPCHandler
 xmlrpc = XMLRPCHandler('simple')
+
+# Admin
+
+from flask.ext.admin import Admin
+admin = Admin(name='Pravis')
