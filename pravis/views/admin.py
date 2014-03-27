@@ -32,7 +32,6 @@ class AdminHomeView(AdminIndexView):
         def get(self, admin):
             form = self.get_form()
             return admin.render('admin/home.html', **{
-                'user': current_user,
                 'form': form
             })
 
@@ -41,6 +40,5 @@ class AdminHomeView(AdminIndexView):
             if form.validate():
                 return redirect(url_for('admin.index'))
             return admin.render('admin/home.html', **{
-                'user': current_user,
                 'form': form
             })
