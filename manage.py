@@ -14,12 +14,12 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager, prompt, prompt_pass, Shell, Server
 from flask.ext.security import SQLAlchemyUserDatastore
 from flask.ext.security.utils import encrypt_password
-from pravis.app import create
-from pravis.app.ext import db
+from pravis.app import create_app
+from pravis.ext import db
 from pravis.auth.models import User, Role
 
 
-app = create()
+app = create_app()
 manager = Manager(app)
 migrate = Migrate(app, db)
 

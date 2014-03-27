@@ -9,10 +9,12 @@
 import os
 
 from flask.ext.security import SQLAlchemyUserDatastore
-from pravis.auth.models import User, Role
-from pravis.app.ext import admin, db, migrate, security, xmlrpc
 from pravis.exceptions import ImproperlyConfigured
+from pravis.ext import db, migrate, security, xmlrpc
 from werkzeug import SharedDataMiddleware
+
+
+admin = None
 
 
 def load_config(app, override=None):
@@ -115,6 +117,7 @@ def register_extenstions(app):
     migrate.init_app(app, db)
 
     # Flask Security
+    from pravis.auth.models import User, Role
     datastore = SQLAlchemyUserDatastore(db, User, Role)
     security.init_app(app, datastore=datastore)
 
@@ -124,6 +127,15 @@ def register_extenstions(app):
     xmlrpc.register(search, 'search')
 
     # Admin
+    from flask.ext.admin import Admin
+    from pravis.views.admin import AdminHomeView
+
+    global admin
+
+    admin = Admin(
+        name='Pravis',
+        index_view=AdminHomeView(name='Dashboard'),
+        base_template='layout/admin.html')
     admin.init_app(app)
 
 

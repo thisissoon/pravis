@@ -6,14 +6,14 @@
 """
 
 from flask import Flask
-from pravis.app.loader import (
+from pravis.loader import (
     load_config,
     register_extenstions,
     register_blueprints,
     register_uploads)
 
 
-def create(config=None):
+def create_app(config=None):
     """
     Create a flask application, optionally passing in a path to a separate
     config file to override existing configuration

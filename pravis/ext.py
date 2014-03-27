@@ -25,8 +25,3 @@ security = Security()
 
 from flask.ext.xmlrpc import XMLRPCHandler
 xmlrpc = XMLRPCHandler('simple')
-
-# Admin
-
-from flask.ext.admin import Admin
-admin = Admin(name='Pravis')
