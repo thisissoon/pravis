@@ -19,7 +19,7 @@
     <tbody>
         {% for package in pages.items %}
         <tr>
-            <td><a href="#">{{ package.name }}</a></td>
+            <td><a href="{{ url_for('admin.packages.edit', id=package.id) }}">{{ package.name }}</a></td>
             <td>{{ package.latest_release.author }}</td>
             <td>{{ package.mirrored }}</td>
             <td>{{ package.latest_release.version }}</td>

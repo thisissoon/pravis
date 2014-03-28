@@ -1,0 +1,52 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+{{ super() }}
+<h2>Package: {{ package.name }}</h2>
+<p>Use the form below to edit the package.</p>
+<form action="{{ url_for('admin.packages.edit', id=package.id) }}" method="post" class="form-horizontal">
+    {{ form.hidden_tag() }}
+    <fieldset>
+        <legend>Edit Package</legend>
+        <div class="control-group{% if form.name.errors %} error{% endif %}">
+                {{ form.name.label(class_='control-label') }}
+            <div class="controls">
+                {{ form.name() }}
+            </div>
+        </div>
+        <div class="control-group{% if form.mirrored.errors %} error{% endif %}">
+                {{ form.mirrored.label(class_='control-label') }}
+            <div class="controls">
+                {{ form.mirrored() }}
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<h3>Releases</h3>
+<p>Releases associated with {{ package.name }}, click on the version number to go to the release.</p>
+<table class="table table-striped table-bordered table-hover table-condensed">
+    <thead>
+        <tr>
+            <th width="25%">Version</th>
+            <th width="25%">Created</th>
+            <th width="25%">Author</th>
+            <th width="25%">Author E-Meail</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for release in package.releases %}
+        <tr>
+            <td><a href="#">{{ release.version }}</a></td>
+            <td>{{ release.created.strftime('%d/%m/%Y @ %H:%I %Z') }}</td>
+            <td>{{ release.author }}</td>
+            <td>{{ release.author_email }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -6,7 +6,7 @@
 """
 
 from flask.blueprints import Blueprint
-from pravis.package.admin import PackageListView
+from pravis.package.admin import PackageAdminView
 
 
 blueprint = Blueprint(
@@ -20,5 +20,8 @@ routes = []
 
 # Admin Views (Flask-Admin)
 admin = [
-    PackageListView(name='List', category='Packages', endpoint='packages/')
+    PackageAdminView(
+        name='Packages',
+        url='packages',
+        endpoint='admin.packages')
 ]
