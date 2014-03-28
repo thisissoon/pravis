@@ -25,8 +25,20 @@ class Package(db.Model, CreateUpdateMixin, GetOrCreateMixin):
         'User',
         secondary='package_owners',
         backref=db.backref('packages', lazy='dynamic'))
+    releases = db.relationship(
+        'Release',
+        lazy='dynamic',
+        order_by="desc(Release.created)")
 
-    releases = db.relationship('Release')
+    @property
+    def latest_release(self):
+        """
+        Return the latest release object related to the package.
+
+        :returns: pravis.package.models.Release
+        """
+
+        return self.releases.first()
 
 
 class PackageOwners(db.Model, CreateUpdateMixin):

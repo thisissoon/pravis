@@ -20,5 +20,5 @@ routes = []
 
 # Admin Views (Flask-Admin)
 admin = [
-    PackageListView(name='List', category='Packages')
+    PackageListView(name='List', category='Packages', endpoint='packages/')
 ]
