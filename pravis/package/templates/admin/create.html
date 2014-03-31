@@ -1,0 +1,30 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+{{ super() }}
+<h2>Create Package</h2>
+<p>Create a new package by completing the form below.</p>
+<form action="{{ url_for('admin.packages.create') }}" method="post" class="form-horizontal">
+    {{ form.hidden_tag() }}
+    <fieldset>
+        <legend>Create Package</legend>
+        <div class="control-group{% if form.name.errors %} error{% endif %}">
+                {{ form.name.label(class_='control-label') }}
+            <div class="controls">
+                {{ form.name() }}
+            </div>
+        </div>
+        <div class="control-group{% if form.mirrored.errors %} error{% endif %}">
+                {{ form.mirrored.label(class_='control-label') }}
+            <div class="controls">
+                {{ form.mirrored() }}
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
