@@ -24,7 +24,9 @@ class Package(db.Model, CreateUpdateMixin, GetOrCreateMixin):
     owners = db.relationship(
         'User',
         secondary='package_owners',
-        backref=db.backref('packages', lazy='dynamic'))
+        cascade='all,delete-orphan',
+        single_parent=True,
+        backref=db.backref('packages', lazy='dynamic', cascade='all'))
     releases = db.relationship(
         'Release',
         lazy='dynamic',
@@ -106,11 +108,11 @@ class Release(db.Model, CreateUpdateMixin):
     # Foreign Keys
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('user.id'),
+        db.ForeignKey('user.id', ondelete='cascade'),
         nullable=False)
     package_id = db.Column(
         db.Integer,
-        db.ForeignKey('package.id'),
+        db.ForeignKey('package.id', ondelete='cascade'),
         nullable=False)
 
     # Release attributes - comes from setup.py

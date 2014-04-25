@@ -7,7 +7,10 @@
 <form action="{{ url_for('admin.packages.edit', id=package.id) }}" method="post" class="form-horizontal">
     {{ form.hidden_tag() }}
     <fieldset>
-        <legend>Edit Package</legend>
+        <legend>
+            Edit Package
+            <a href="{{ url_for('admin.packages.delete', id=package.id) }}" class="btn btn-danger pull-right">Delete</a>
+        </legend>
         <div class="control-group{% if form.name.errors %} error{% endif %}">
                 {{ form.name.label(class_='control-label') }}
             <div class="controls">
