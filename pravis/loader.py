@@ -10,7 +10,7 @@ import os
 
 from flask.ext.security import SQLAlchemyUserDatastore
 from pravis.exceptions import ImproperlyConfigured
-from pravis.ext import db, migrate, security, xmlrpc
+from pravis.ext import db, migrate, security, xmlrpc, velox
 from werkzeug import SharedDataMiddleware
 
 
@@ -137,6 +137,9 @@ def register_extenstions(app):
         index_view=AdminHomeView(name='Dashboard'),
         base_template='layout/admin.html')
     admin.init_app(app)
+
+    # Velox
+    velox.init_app(app)
 
 
 def register_blueprints(app):
