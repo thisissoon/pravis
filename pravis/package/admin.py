@@ -5,75 +5,48 @@
    :synopsis: Flask super admin integration for package blueprint
 """
 
-from flask import flash, request, redirect, url_for
 from flask.ext import admin
 from flask.ext.login import current_user
-from flask.views import MethodView
+from flask.ext.velox.formatters import bool_admin_formatter
+from flask.ext.velox.admin.views.sqla.read import AdminModelTableView
+from flask.ext.velox.admin.views.sqla.forms import (
+    AdminCreateModelView,
+    AdminUpdateModelView)
+from flask.ext.velox.admin.views.sqla.delete import (
+    AdminDeleteObjectView)
 from pravis.ext import db
 from pravis.package.forms import PackageForm
 from pravis.package.models import Package
-from pravis.views.admin import BaseAdminView
 
 
-class PackageAdminView(BaseAdminView):
+class PackageAdminView(admin.BaseView):
+
+    def is_accessible(self):
+        if current_user.is_authenticated():
+            return True
+        return False
 
     @admin.expose_plugview('/')
-    @admin.expose_plugview('/<int:page>')
-    class index(MethodView):
-
-        def get(self, admin, page=1):
-            pages = Package.query.paginate(page, 31, False)
-            return admin.render('admin/list.html', **{
-                'pages': pages
-            })
+    class index(AdminModelTableView):
+        model = Package
+        columns = ['name', 'mirrored', 'latest_version']
+        formatters = {
+            'mirrored': bool_admin_formatter
+        }
 
     @admin.expose_plugview('/create')
-    class create(MethodView):
+    class create(AdminCreateModelView):
+        model = Package
+        form = PackageForm
+        session = db.session
 
-        form_class = PackageForm
+    @admin.expose_plugview('/update/<int:id>')
+    class update(AdminUpdateModelView):
+        model = Package
+        form = PackageForm
+        session = db.session
 
-        def form(self, values=None, **kwargs):
-            self.form = self.form_class(values, **kwargs)
-            return self.form
-
-        def get(self, admin):
-            form = self.form()
-            return admin.render('admin/create.html', **{
-                'form': form
-            })
-
-        def post(self, admin):
-            form = self.form(request.values)
-            if form.validate():
-                package = Package(**form.data)
-                package.owners.append(current_user)
-                db.session.add(package)
-                db.session.commit()
-                flash('Package ({0}) created'.format(package.name), 'success')
-                return redirect(url_for('admin.packages.list'))
-            return admin.render('admin/create.html', **{
-                'form': form
-            })
-
-    @admin.expose_plugview('/edit/<int:id>')
-    class edit(MethodView):
-
-        def get(self, admin, id):
-            package = Package.query.filter_by(id=id).first_or_404()
-            form = PackageForm(obj=package)
-            return admin.render('admin/edit.html', **{
-                'form': form,
-                'package': package
-            })
-
-        def post(self, admin, id):
-            package = Package.query.filter_by(id=id).first_or_404()
-            form = PackageForm(request.values, obj=package)
-            if form.validate():
-                Package.query.filter_by(id=id).update(form.data)
-                db.session.commit()
-                flash(u'Package ({0}) updated'.format(package.name), 'success')
-            return admin.render('admin/edit.html', **{
-                'form': form,
-                'package': package
-            })
+    @admin.expose_plugview('/delete/<int:id>')
+    class delete(AdminDeleteObjectView):
+        model = Package
+        session = db.session

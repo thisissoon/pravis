@@ -14,44 +14,49 @@ from pravis.auth.decorators import basic_auth
 from pravis.ext import db
 from pravis.package.models import Classifier, File, Package, Release
 from pravis.simple.forms import ReleaseForm
-from pravis.views.mixins import TemplateMixin
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden
 from werkzeug.utils import secure_filename
 
+from flask.ext.velox.views.sqla import read
 
-class SimpleListView(MethodView, TemplateMixin):
 
-    methods = ['GET', ]
+class SimpleListView(read.ModelListView):
+    """ Renders a simpoe list of packages used by installers to search for
+    packages by name.
+
+    **HTTP Methods:**
+    * ``GET``
+    """
+
+    model = Package
     template = 'list.html'
-
-    def get(self):
-        packages = db.session.query(Package).all()
-        return self.render({
-            'packages': packages
-        })
+    objects_context_name = 'packages'
+    paginate = False
 
 
-class SimpleDetailView(MethodView, TemplateMixin):
+class SimpleDetailView(read.ObjectView):
+    """ Package detail view rendering package download links.
 
-    methods = ['GET', ]
+    **HTTP Methods:**
+    * ``GET``
+    """
+
+    model = Package
     template = 'detail.html'
+    object_context_name = 'package'
 
-    def get(self, name=None, version=None):
-        query = db.session.query(Package)
-
-        if name:
-            query = query.filter(Package.name == name)
-
-        if version:
-            query = query.join(Release).filter(Release.version == version)
-
-        package = query.first()
-
-        if not package:
-            raise NotFound()
-
-        return self.render({
-            'package': package})
+    def get_object(self):
+        name = self.name  # name not optional
+        query = Package.query.filter_by(name=name)
+        # Version is optional
+        try:
+            version = self.version
+        except AttributeError:
+            version = None
+        else:
+            query = query.filter(Release.version == version)
+        obj = query.first_or_404()
+        return obj
 
 
 class SimpleUploadView(MethodView):

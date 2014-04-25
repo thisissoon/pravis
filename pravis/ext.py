@@ -25,3 +25,8 @@ security = Security()
 
 from flask.ext.xmlrpc import XMLRPCHandler
 xmlrpc = XMLRPCHandler('simple')
+
+# Velox
+
+from flask.ext.velox import Velox
+velox = Velox()

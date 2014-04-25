@@ -40,7 +40,14 @@ class Package(db.Model, CreateUpdateMixin, GetOrCreateMixin):
         :returns: pravis.package.models.Release
         """
 
-        return self.releases.first()
+        return self.releases.one()
+
+    @property
+    def latest_version(self):
+        try:
+            return self.latest_release.version
+        except:
+            return None
 
 
 class PackageOwners(db.Model, CreateUpdateMixin):
