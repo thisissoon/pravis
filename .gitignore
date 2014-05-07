@@ -9,6 +9,7 @@ dist/
 # Dots
 .DS_Store
 .env
+.tmuxp.yaml
 
 # Schema
 schema.png
