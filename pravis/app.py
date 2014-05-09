@@ -9,7 +9,6 @@ from flask import Flask
 from pravis.loader import (
     load_config,
     register_extenstions,
-    register_blueprints,
     register_uploads)
 
 
@@ -32,9 +31,6 @@ def create_app(config=None):
 
     # Initialize extensions
     register_extenstions(app)
-
-    # Dynamically load blueprints
-    register_blueprints(app)
 
     # Upload endooints - Only in debug
     if app.config['DEBUG']:

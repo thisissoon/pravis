@@ -30,3 +30,8 @@ xmlrpc = XMLRPCHandler('simple')
 
 from flask.ext.velox import Velox
 velox = Velox()
+
+# Via
+
+from flask.ext.via import Via
+via = Via()
