@@ -5,23 +5,16 @@
    :synopsis: Flask blueprint instantiation and route definitions
 """
 
-from flask.blueprints import Blueprint
+from flask.ext.via.routers.admin import AdminRoute
 from pravis.package.admin import PackageAdminView
 
+#
+# Routes
+#
 
-blueprint = Blueprint(
-    'package',
-    __name__,
-    url_prefix='/package',
-    template_folder='templates')
-
-# Public routes
-routes = []
-
-# Admin Views (Flask-Admin)
-admin = [
-    PackageAdminView(
+routes = [
+    AdminRoute(PackageAdminView(
         name='Packages',
         url='packages',
-        endpoint='admin.packages')
+        endpoint='admin.packages'))
 ]

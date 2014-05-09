@@ -28,15 +28,11 @@ DEFAULT_DATABASE_URI = 'sqlite://:memory:'
 SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or \
     DEFAULT_DATABASE_URI
 
-# Blueprints
-
-BLUEPRINTS = [
-    'pravis.auth',
-    'pravis.package',
-    'pravis.simple',
-]
-
 # Uploads
 
 UPLOAD_DIR = os.path.join(BASE_DIR, '..', 'media')
 UPLOAD_PACKAGE_DIR = os.path.join(UPLOAD_DIR, 'packages')
+
+# VIa
+
+VIA_ROUTES_MODULE = 'pravis.routes'
